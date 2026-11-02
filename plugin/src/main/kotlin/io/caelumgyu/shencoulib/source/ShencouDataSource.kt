@@ -111,12 +111,13 @@ class ShencouDataSource : WebBookDataSource {
     override suspend fun isOffLine(): Boolean =
         runCatching { !ktorClient.get(HOST).status.isSuccess() }.getOrDefault(true)
 
-    private suspend fun getDocument(url: String) =
-        ktorClient.safeGet(url)
-            .mapAsWebRequestError("网络请求失败", "请求 $url 失败")
-            .getOrNull()
-            ?.takeIf { it.status.isSuccess() }
-            ?.let { Jsoup.parse(it.bodyAsDecodedText()) }
+    private suspend fun getDocument(url: String): Document? = try {
+        val res = ktorClient.get(url)
+        if (!res.status.isSuccess()) null else Jsoup.parse(res.bodyAsDecodedText())
+    } catch (t: Throwable) {
+        Log.w(TAG, "请求失败: $url", t)
+        null
+    }
 
     override suspend fun getBookInformation(id: String) = coroutineBinding {
         val doc = getDocument("$HOST/info.php?aid=$id")
