@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace = "io.nightfish.potatolib"
+    namespace = "io.caelumgyu.shencoulib"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "io.nightfish.potatolib"
+        applicationId = "io.caelumgyu.shencoulib"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
