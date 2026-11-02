@@ -21,5 +21,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PotatoLib"
+rootProject.name = "ShencouLib"
 include(":plugin")
