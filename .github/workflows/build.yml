@@ -1,0 +1,48 @@
+name: build plugin
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["**"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: ensure android platform
+        run: |
+          if [ -n "$ANDROID_HOME" ]; then
+            (yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;37.0.0") || \
+            (yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0") || true
+          fi
+      - uses: gradle/actions/setup-gradle@v4
+      - name: assemble release
+        run: ./gradlew :plugin:assembleRelease --no-daemon --stacktrace
+      - name: rename to lnrp
+        id: pack
+        run: |
+          set -e
+          f=$(find plugin/build/outputs/apk/release -name '*.apk.lnrp' | head -1)
+          [ -n "$f" ] || f=$(find plugin/build/outputs/apk/release -name '*.apk' | head -1)
+          cp "$f" shencou-lib.lnrp
+          echo "file=shencou-lib.lnrp" >> "$GITHUB_OUTPUT"
+          ls -l shencou-lib.lnrp
+      - name: upload to release
+        run: |
+          set -e
+          tag="v$(date +%Y%m%d-%H%M)"
+          gh release create "$tag" "${{ steps.pack.outputs.file }}#shencou-lib.lnrp" --title "ShencouLib $tag" --notes "自动构建的神凑轻小说数据源插件"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shencou-lib
+          path: shencou-lib.lnrp
