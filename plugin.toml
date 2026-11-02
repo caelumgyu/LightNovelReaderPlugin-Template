@@ -1,0 +1,26 @@
+id = "io.caelumgyu.shencoulib"
+name = "神凑轻小说"
+author = "caelumgyu"
+categories = ["novel"]
+summary = "神凑轻小说文库数据源（m.wowenku.com）"
+is_nsfw = false
+
+description = """
+神凑轻小说文库（m.wowenku.com）数据源：支持按书名/作者搜索、目录与正文抓取，自动处理 GBK 编码页面。
+仅供学习交流使用。
+"""
+
+target_api = 2
+languages = ["zh-CN"]
+copyright = "© 2026 caelumgyu"
+
+[release]
+version_name = "0.1"
+version_code = 1
+changelog = """
+1. 首个版本：搜索、书籍详情、目录、正文。
+"""
+
+[release.download]
+file = "shencou-lib.lnrp"
+output_file = "shencou-lib.lnrp"

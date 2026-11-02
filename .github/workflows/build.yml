@@ -39,7 +39,7 @@ jobs:
         run: |
           set -e
           tag="v$(date +%Y%m%d-%H%M)"
-          gh release create "$tag" "${{ steps.pack.outputs.file }}#shencou-lib.lnrp" --title "ShencouLib $tag" --notes "自动构建的神凑轻小说数据源插件"
+          gh release create "$tag" "${{ steps.pack.outputs.file }}#shencou-lib.lnrp" "plugin.toml" --title "ShencouLib $tag" --notes "自动构建的神凑轻小说数据源插件"
         env:
           GH_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v4
